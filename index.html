@@ -1,68 +1,72 @@
-<!doctype html> 
-<html lang="en"> 
-<head> 
-    <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 1</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.1.1/dist/phaser.js"></script>
-    <style type="text/css">
-        body {
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
+<!DOCTYPE html>  
+<html>
+    <head>  
+        <meta charset="utf-8" />
+        <title> Flappy Bird Clone </title>
+        <script type="text/javascript" src="phaser.min.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </head>
 
-    
-    
-<script type="text/javascript">
+    <body>
+// Create our 'main' state that will contain the game
+var mainState = {
+    preload: function() { 
+        // This function will be executed at the beginning     
+        // That's where we load the images and sounds 
+    },
 
-    var config = {
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        physics: {
-            default: 'arcade',
-            arcade: {
-            gravity: { y: 300},
-                debug: false
-            }
-        },
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        }
-    };
+    create: function() { 
+        // This function is called after the preload function     
+        // Here we set up the game, display sprites, etc.  
+    },
 
-    var game = new Phaser.Game(config);
+    update: function() {
+        // This function is called 60 times per second    
+        // It contains the game's logic   
+    },
+};
 
-    function preload ()
-    {
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-    }
+// Initialize Phaser, and create a 400px by 490px game
+var game = new Phaser.Game(400, 490);
 
-    function create ()
-    {
-        this.add.image(400,300, 'sky');
-        
-        platforms = this.physics.add.staticGroup();
-        
-        platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-        
-        platforms.create(600, 400, 'ground');
-        platforms.create(50, 250, 'ground');
-        platforms.create(750, 220, 'ground');
-    }
+// Add the 'mainState' and call it 'main'
+game.state.add('main', mainState); 
 
-    function update ()
-    {
-    }
+// Start the state to actually start the
+game.state.start('main');
+    </body>  
+</html>  
+preload: function() { 
+    // Load the bird sprite
+    game.load.image('bird', 'assets/bird.png'); 
+},
 
-</script>
+create: function() { 
+    // Change the background color of the game to blue
+    game.stage.backgroundColor = '#71c5cf';
 
-</body>
-</html>
+    // Set the physics system
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    // Display the bird at the position x=100 and y=245
+    this.bird = game.add.sprite(100, 245, 'bird');
+
+    // Add physics to the bird
+    // Needed for: movements, gravity, collisions, etc.
+    game.physics.arcade.enable(this.bird);
+
+    // Add gravity to the bird to make it fall
+    this.bird.body.gravity.y = 1000;  
+
+    // Call the 'jump' function when the spacekey is hit
+    var spaceKey = game.input.keyboard.addKey(
+                    Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(this.jump, this);     
+},
+
+update: function() {
+    // If the bird is out of the screen (too high or too low)
+    // Call the 'restartGame' function
+    if (this.bird.y < 0 || this.bird.y > 490)
+        this.restartGame();
+},
