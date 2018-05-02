@@ -46,7 +46,7 @@ var mainState = {
         // Create an empty group for stars
         this.stars = game.add.group(); 
 //        this.pipes.scale.setTo(0.70, 0.70);
-        this.pipeTimer = game.time.events.loop(2500, this.addRowOfPipes, this); 
+        this.pipeTimer = game.time.events.loop(3500, this.addRowOfPipes, this); 
         this.starTimer = game.time.events.loop(1000, this.addRowOfStars, this);
         this.score = 0;
         this.labelScore = game.add.text(20, 20, "0", 
